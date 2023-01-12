@@ -1,0 +1,92 @@
+---
+title: "Assignment 1 Markdown"
+author: "Eva Burguete-Innocente 20154735"
+date: "2023-01-10"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+[Link to my github](https://github.com/evainnocente/BIOL432_Assignment1) 
+
+Load packages:
+```{r}
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+```
+
+
+1. Running Script 1 (dataGenerato.R)
+
+```{r}
+source('dataGenerato.R')
+```
+
+This script creates data frame with four columns: organism, limb width, limb length, and observer. These data were created by making vectors that randomly sampled 100 values from either a short list of species/observer names, or a normal distribution (for limb width/length)
+
+2. Running Script 2 (volumeEstimato.R)
+
+```{r}
+source('volumeEstimato.R')
+```
+
+This script added a fifth column (limb volume) to the dataset created above. Limb volume was crudely estimated with the formula for volume of a cylinder, pir^2h, where limb width divided by 2 was the radius and limb length was the height.
+
+3. Load the revised measurements.csv
+
+```{r}
+measurementsdata<-read.csv('measurements.csv')
+```
+
+4. Sort the data by species, observer, and limb volume
+
+```{r}
+
+measurementsdata%>%
+  group_by(organism)
+
+measurementsdata%>%
+  group_by(observer)
+
+measurementsdata%>%
+  group_by(Volume)
+```
+
+5. Table showing average volume of each species
+
+```{r}
+measurementsdata%>%
+        group_by(organism)%>%
+        summarise(Avg_vol=mean(Volume))
+```
+
+6. Table showing number of observations for each combination of species and observer
+
+```{r}
+measurementsdata%>%
+        group_by(organism,observer)%>%
+        summarise(N=n())
+```
+
+7. A single box plot showing key features of the distributions of volumes for each species
+
+```{r}
+
+boxplot<-ggplot(aes(x=organism,y=Volume,fill=organism),data=measurementsdata)+geom_boxplot()+scale_fill_manual(values = c("blue", "green", "orange", "red","yellow"),name="Species")+labs(title = "Distributions of Limb Volume for Each Species",
+       y = "Limb volume", x = "Species")
+boxplot
+```
+
+8. Multi-panel plot of frequency histograms for each species.
+
+```{r}
+
+histogram<-ggplot(aes(x=Volume,fill=organism),data=measurementsdata)+geom_histogram(bins=35)+labs(title = "Frequency of Limb Volume for Each Species",
+       y = "Frequency", x = "Limb volume")+facet_wrap(vars(organism))+
+  scale_fill_manual(values = c("blue", "green", "orange", "red","yellow"),name = "Species")
+histogram
+
+
+```
+
