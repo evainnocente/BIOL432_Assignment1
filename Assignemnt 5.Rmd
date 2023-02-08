@@ -1,0 +1,49 @@
+---
+title: "Regex"
+author: "Eva Burguete-Innocente"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+Link to my assignment 5 repository:
+https://github.com/evainnocente/Assignment-5
+
+Importing my measurements.csv file from my Week 1 assignment.
+
+```{r}
+MData<-read.csv("C:/Users/evain/OneDrive - Queen's University/university/BIOL 432/Week 1/measurements.csv")
+
+```
+
+Using dplyr and regular expressions to replace the genus name in the Organism column with the first letter of the word and a period (.). I named this column Sp. 
+
+```{r}
+library(dplyr)
+
+MData<-MData%>%
+  mutate(Sp=sub("(\\w)\\w+","\\1.", MData$organism))
+
+#Checking whether it worked
+
+head(MData)
+```
+
+I replaced the organism column with the Sp column I made above and reordered them so that Sp was the first column.
+
+```{r}
+MData<-MData%>%
+  select(Limb_width,Limb_length,observer,Volume,Sp)%>%
+  relocate(Sp)
+
+#Checking if it worked
+
+head(MData)
+
+```
+
+I saved this data set as a new csv file called MeasShort.csv. 
+
+```{r}
+write.csv(MData,"C:/Users/evain/OneDrive - Queen's University/university/BIOL 432/Week 1\\MeasShort.csv",row.names=FALSE)
+```
+
